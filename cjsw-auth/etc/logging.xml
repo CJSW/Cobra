@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration>
+
+	<appender name="CONSOLEOUT" class="org.apache.log4j.ConsoleAppender">
+		<param name= "Threshold" value= "debug" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%5p(%c{1}:%L - %d{HH:mm:ss,SSS})\n  %m%n"/>
+		</layout>
+	</appender>
+	
+  <appender name= "FILE" class= "org.apache.log4j.RollingFileAppender">
+    <param name="File" value="logs/application.log" />
+    <param name="Threshold" value="info" />
+    <param name="MaxFileSize" value="10MB" />
+    <param name="MaxBackupIndex" value="3" />
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%d %5p [%t] %c{1} - %m%n" />
+    </layout>
+  </appender>
+
+  <category name="ca.benow.web"><priority value="info"/></category>
+  <category name="ca.reachable.web"><priority value="info"/></category>
+  <category name="ca.benow.util.reflect"><priority value="info"/></category>
+	<category name="ca.benow.service.http"><priority value="info"/></category>
+	<category name="org.mortbay"><priority value="info"/></category>
+	<category name="ca.benow.repository"><priority value="info"/></category>
+	
+	<root>
+	  <priority value="info"/>
+    <appender-ref ref="CONSOLEOUT"/>
+    <appender-ref ref="FILE"/>
+	</root>
+	
+</log4j:configuration>
+
+

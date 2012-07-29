@@ -1,0 +1,76 @@
+# ApacheDS 1.0 Basic User's Guide
+# Section "Basic authorization" 
+# File authz_cjsw.ldif
+#
+# Create an operational attribute "administrativeRole"
+# with value "accessControlSpecificArea" in the entry "ou=cjsw".
+#
+dn: ou=cjsw
+changetype: modify
+add: administrativeRole
+administrativeRole: accessControlSpecificArea
+
+# Create a subentry subordinate to "ou=cjsw" to grant all operations' permissions 
+# to "cn=Horatio Nelson,ou=people,ou=cjsw", to grant search and compare permissions
+# to all users (even anonymous ones) and to deny search and compare permissions for 
+# userPassword attribute to all users. 
+#
+dn: cn=cjswAuthorizationRequirementsACISubentry,ou=cjsw
+changetype: add
+objectclass: top
+objectclass: subentry
+objectclass: accessControlSubentry
+cn: cjswAuthorizationRequirementsACISubentry
+subtreeSpecification: {}
+prescriptiveACI: {
+    identificationTag "directoryManagerFullAccessACI",
+    precedence 11,
+    authenticationLevel simple,
+    itemOrUserFirst userFirst:
+    {
+      userClasses
+      {
+        name { "uid=andy,ou=people,ou=cjsw" }
+      },
+      userPermissions
+      { 
+        {
+          protectedItems
+          {
+            entry, allUserAttributeTypesAndValues
+          },
+          grantsAndDenials
+          {
+            grantAdd, grantDiscloseOnError, grantRead,
+            grantRemove, grantBrowse, grantExport, grantImport,
+            grantModify, grantRename, grantReturnDN,
+            grantCompare, grantFilterMatch, grantInvoke
+          } 
+        }
+      }
+    } 
+  }
+prescriptiveACI: {
+    identificationTag "allUsersACI",
+    precedence 10,
+    authenticationLevel none,
+    itemOrUserFirst userFirst:
+    {
+      userClasses
+      {
+        allUsers
+      },
+      userPermissions
+      { 
+        {
+          protectedItems { entry, allUserAttributeTypesAndValues },
+          grantsAndDenials { grantRead, grantBrowse, grantReturnDN,
+                             grantCompare, grantFilterMatch, grantDiscloseOnError } 
+        },
+        {
+          protectedItems { attributeType { userPassword } },
+          grantsAndDenials { denyRead, denyCompare, denyFilterMatch }
+        }
+      }
+    }
+  }

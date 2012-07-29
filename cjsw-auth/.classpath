@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/repository"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/xml"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/java"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/security"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/security-ldap"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/web"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/web-security"/>
+	<classpathentry kind="lib" path="lib/java/commons-collections-3.2.1.jar"/>
+	<classpathentry kind="lib" path="lib/java/derby.jar"/>
+	<classpathentry kind="lib" path="lib/java/HTTPClient.jar"/>
+	<classpathentry kind="lib" path="lib/java/jetty-util.jar"/>
+	<classpathentry kind="lib" path="lib/java/jetty.jar"/>
+	<classpathentry kind="lib" path="lib/java/junit.jar"/>
+	<classpathentry kind="lib" path="lib/java/log4j.jar"/>
+	<classpathentry kind="lib" path="lib/java/mail.jar"/>
+	<classpathentry kind="lib" path="lib/java/mina-core-2.0.4.jar"/>
+	<classpathentry kind="lib" path="lib/java/org.hamcrest.core_1.1.0.v20090501071000.jar"/>
+	<classpathentry kind="lib" path="lib/java/servlet-api.jar"/>
+	<classpathentry kind="lib" path="lib/java/shared-all-1.0.0-M8.jar"/>
+	<classpathentry kind="lib" path="lib/java/slf4j-api-1.6.1.jar"/>
+	<classpathentry kind="lib" path="lib/java/slf4j-log4j12-1.6.1.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/service"/>
+	<classpathentry kind="lib" path="lib/java/xalan.jar"/>
+	<classpathentry kind="lib" path="lib/java/compiler.jar"/>
+	<classpathentry kind="lib" path="lib/java/yuicompressor-2.4.6.jar"/>
+	<classpathentry kind="lib" path="lib/java/mysql-connector-java.jar"/>
+	<classpathentry kind="output" path="build/java"/>
+</classpath>

@@ -1,0 +1,86 @@
+body.styled {
+ background: url("/images/cjsw/main-bg.gif") no-repeat scroll 0 0 #F47927;
+ color: #454545;
+ text-align: center;
+ width: 800px;
+}
+
+div#logo {
+ display: none;
+}
+td, td > * {
+ font-family: Lucida Sans, Lucida, sans-serif;
+ font-size: 10px;
+}
+
+div#content {
+ position: absolute;
+ float: left;
+ background: white;
+ border: 1px solid darkgrey;
+ top: 75px;
+ left: 60px;
+ text-align: left;
+ padding-top: 50px;
+ padding-left: 10px;
+ padding-right: 10px;
+ padding-bottom: 10px;
+ width: auto;
+ min-width: 350px;
+}
+
+#contact {
+ font-size: 10px;
+ margin-top: 30px;
+ border-top: 1px solid lightgrey;
+ padding-top: 10px;
+}
+
+#cjsw-cloud {
+ position: absolute;
+ left: 0px;
+ top: 12px;
+ background: none repeat scroll 0 0 transparent;
+ float: left;
+ height: 133px;
+ margin-left: -60px;
+ margin-top: -14px;
+ padding: 0;
+ width: 345px;
+ z-index: 80;
+ background: url("/images/cjsw/cjsw_cloud.png") no-repeat scroll 0 0
+  transparent;
+}
+
+#cjsw-cloud a {
+ display: block;
+ position: relative;
+ left: 70px; top 75px;
+ height: 90px;
+ text-indent: -10000em;
+ width: 175px;
+}
+
+div#content h1 {
+ text-align: right;
+ padding-left: 220px;
+ padding: 5px;
+ border-bottom: 1px solid black;
+ border-right: 1px solid black;
+ margin: 0px;
+ margin-bottom: 20px;
+ background: url("/images/cjsw/stripe-bg.gif") repeat scroll 0 0
+  transparent;
+ border-top: 1px solid #CCCCCC;
+ font-size: 150%;
+ font-weight: bold;
+ text-transform: lowercase;
+ position: absolute;
+ top: 0px;
+ right: 0px;
+ left: 0px;
+}
+
+div#main-menu {
+ left: 275px;
+}

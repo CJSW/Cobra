@@ -1,0 +1,53 @@
+#!/bin/bash
+
+# This file belongs in /etc/init.d where it will be run
+# on system startup and shutdown to start the
+# qserver 
+
+# Source LSB function library.
+. /lib/lsb/init-functions
+
+set -u
+
+# change this to be the install location
+HOME="/opt/workspace/Cobra/cjsw-auth"
+
+# change this to be the user to run as
+# NOTE: use the root user if port # <=1024
+RUNUSER=andy
+
+# note: -k (kill instance, die via socket connect) is a bit insecure, but ok if behind a firewill and allows for nice restarts
+#OPTS="-p 8389 -k"
+# ajp is port+4
+OPTS="-b localhost -p 8389 -k --ajp --accept login.cjsw.com,localhost"
+NAME="cjsw-auth"
+EXEC="run/web.sh"
+
+# See how we were called.
+case "$1" in
+    start)
+        echo "Starting $NAME"
+        cd $HOME && sudo -u $RUNUSER nohup $EXEC $OPTS > /dev/null &
+	RETVAL=$?
+    ;;
+
+    stop)
+	echo "Stopping $NAME"
+	ps fax | grep $HOME | grep java | awk '{ print $1 }' | xargs --replace=+ kill +
+	RETVAL=$?
+
+    ;;
+
+    restart|force-reload)
+	$0 stop && $0 start
+	RETVAL=$?
+    ;;
+
+    *)
+	echo "Usage: $0 {start|stop|shutdown|restart|force-reload|status}"
+	RETVAL=2
+    ;;
+esac
+
+exit $RETVAL
+

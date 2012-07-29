@@ -1,0 +1,201 @@
+<project name="cjsw-auth" default="compile" basedir=".">
+
+
+	<property name="app.name" value="cjsw-auth" />
+	<property name="app.version" value="1.0" />
+	<property name="compile.debug" value="true" />
+	<property name="java.library.path" value="lib/java/linux/amd64:lib/java/linux/i386:lib/java/win32" />
+
+	<!-- deploy should be the webapps directory for the servlet container -->
+	<property file="/etc/benow/build.properties" />
+	<property file="etc/build.properties" />
+
+	<path id="compile.classpath">
+		<fileset dir="${lib.home}">
+			<include name="*.jar" />
+		</fileset>
+		<pathelement path="${build.home}" />
+		<pathelement location="${java.home}/lib/plugin.jar" />
+		<pathelement location="${java.home}/../lib/tools.jar" />
+		<!--
+    <pathelement location="${java.home}/lib/java/rt.jar"/>
+-->
+	</path>
+
+	<target name="all" depends="clean,jar" description="Clean build and dist, then compile" />
+
+	<target name="clean" description="Delete old build directories">
+		<delete dir="${build.home}" quiet="yes" />
+		<delete dir="dev-template" quiet="yes" failonerror="no" />
+		<delete quiet="yes">
+			<fileset dir="." includes="**/*~" defaultexcludes="no" />
+			<fileset dir="html/js/dyn" includes="**/*" defaultexcludes="no" />
+			<fileset dir="html/css/dyn" includes="**/*" defaultexcludes="no" />
+		</delete>
+
+		<delete dir="${dist.home}" />
+	</target>
+
+	<target name="compile" depends="clean" description="Compile Java sources">
+
+		<!-- Compile Java classes as necessary -->
+		<mkdir dir="${build.home}" />
+		<javac srcdir="${src.home}" destdir="${build.home}" debug="${compile.debug}" deprecation="${compile.deprecation}" optimize="${compile.optimize}">
+			<classpath refid="compile.classpath" />
+		</javac>
+
+		<!-- compile applets -->
+		<javac srcdir="${src.home}" destdir="${build.home}" target="1.4" source="1.4" debug="true" classpath="lib/plugin.jar">
+			<include name="test/ca/benow/web/applet/upload/**" />
+		</javac>
+
+	</target>
+	<target name="jar" depends="clean,compile" description="Create binary distribution">
+
+		<delete dir="${lib.home}/tt" failonerror="false" />
+		<mkdir dir="${lib.home}/tt" />
+		<copy todir="${lib.home}/tt">
+			<fileset dir="${build.home}">
+				<include name="*/**" />
+			</fileset>
+		</copy>
+
+		<!-- prepare resources, outputting for jar -->
+		<java classname="ca.benow.java.packager.Packager" fork="true">
+			<classpath refid="compile.classpath" />
+			<arg value="--file-add" />
+			<arg value="lib/xsl,var/site,var/templates,var/service,var/themes,html,var/lang,var/examples" />
+			<arg value="--output" />
+			<arg value="${lib.home}/tt" />
+		</java>
+
+		<!-- create jar -->
+		<delete file="${app.name}.jar" />
+		<jar jarfile="${app.name}.jar" basedir="${lib.home}/tt" />
+
+		<!--
+		<antcall target="dev-jar" />
+		<antcall target="client-jar" />
+		<antcall target="client-jar15" />
+
+		<delete dir="${build.home}/META-INF" failonerror="true" />
+		<delete dir="${build.home}/WEB-INF" failonerror="true" />
+
+		<antcall target="applets-jar" />
+		-->
+		<delete dir="${lib.home}/tt" failonerror="false" />
+
+	</target>
+
+
+
+	<!-- ==================== Javadoc Target ================================== -->
+
+	<!--
+
+  The "javadoc" target creates Javadoc API documentation for the Java
+  classes included in your application.  Normally, this is only required
+  when preparing a distribution release, but is available as a separate
+  target in case the developer wants to create Javadocs independently.
+
+-->
+
+	<target name="javadoc" depends="compile" description="Create Javadoc API documentation">
+
+		<delete dir="docs/api" failonerror="false" />
+		<mkdir dir="docs/api" />
+		<javadoc sourcepath="src/java" destdir="docs/api" windowtitle="BeNOW Documentation" doctitle="BeNOW Documentation" packagenames="ca.benow.*,ca.benow.*,ca.reachable.*,test.*,xsl.*">
+			<classpath refid="compile.classpath" />
+			<link href="http://docs.oracle.com/javase/6/docs/api/" />
+			<link href="http://benow.ca/project/java/docs/api/" />
+			<link href="http://benow.ca/project/security/docs/api/" />
+			<link href="http://benow.ca/project/repository/docs/api/" />
+			<link href="http://benow.ca/project/security/docs/api/" />
+			<link href="http://benow.ca/project/xml/docs/api/" />
+			<link href="http://benow.ca/project/util/docs/api/" />
+			<link href="http://benow.ca/project/service/docs/api/" />
+		</javadoc>
+
+		<antcall target="walkthru" />
+	</target>
+
+	<target name="walkthru">
+		<delete dir="docs/walkthru/api" failonerror="false" />
+		<mkdir dir="docs/walkthru/api" />
+		<javadoc sourcepath="src/java" destdir="docs/walkthru/api" windowtitle="BeNOW Web Walkthru" packagenames="doc.*">
+			<classpath refid="compile.classpath" />
+		</javadoc>
+
+		<!-- perform syntax highlighting and merge into javadoc tree -->
+		<syntax srcdir="src/java" includes="doc/walkthru/*.java" destdir="docs/walkthru/api" css="../../../files/syntax.css" />
+
+		<delete dir="t" failonerror="false" />
+		<mkdir dir="t/src/java/doc" />
+		<copy todir="t/src/java/doc">
+			<fileset dir="src/java/doc" />
+		</copy>
+		<mkdir dir="t/docs" />
+		<copy todir="t/docs/walkthru">
+			<fileset dir="docs/walkthru" />
+		</copy>
+		<copy todir="t" file="README.walkthru" />
+		<zip destfile="benow-web-walkthru.zip" basedir="t" />
+		<delete dir="t" failonerror="false" />
+	</target>
+
+	<target name="native" depends="compile" description="Compile native code">
+
+		<javah classpath="build" destdir="native/linux" verbose="yes">
+			<class name="ca.benow.util.io.ConsoleReader" />
+		</javah>
+
+		<exec dir="native/linux" executable="make" os="Linux">
+			<env key="java.home" value="${java.home}" />
+			<env key="os.name" value="linux" />
+		</exec>
+
+		<!--
+	<exec dir="native" executable="gmake" os="FreeBSD">
+	 <env key="java.home" value="${java.home}"/>
+	 <env key="os.name" value="freebsd"/>
+	</exec>
+-->
+	</target>
+
+	<target name="dist" depends="javadoc" description="Prep for distribution">
+		<!-- nothing -->
+	</target>
+
+	<target name="setup">
+		<exec executable="java">
+			<arg value="-jar" />
+			<arg value="${lib.home}/benow-launch.jar" />
+			<arg value="Launcher" />
+			<arg value="--make-script" />
+		</exec>
+	</target>
+
+	<!-- ==================== Prepare Target ================================== -->
+
+	<!--
+
+  The "prepare" target is used to create the "build" destination directory,
+  and copy the static contents of your web application to it.  If you need
+  to copy static files from external dependencies, you can customize the
+  contents of this task.
+
+  Normally, this task is executed indirectly when needed.
+
+-->
+
+	<target name="prepare">
+
+		<!-- Create build directory and copy static content -->
+		<mkdir dir="${build.home}" />
+
+		<!-- Copy static files from external dependencies as needed -->
+
+	</target>
+
+
+</project>

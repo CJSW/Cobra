@@ -1,0 +1,190 @@
+<html>
+<head>
+<script src="http://login.cjsw.com/js/ca.benow.util.Request.js">;</script>
+<script src="http://login.cjsw.com/svc/ca.benow.web.security.SecurityWebService.logout().js">;</script>
+<script>
+var authHost='http://login.cjsw.com';
+var authURL=authHost+'/security/login/index.page';
+var logoutURL=authHost+'/svc/ca.benow.web.security.SecurityWebService?exec=logout()';
+var userInfoURL=authHost+'/svc/ca.benow.web.security.SecurityWebService?exec=getUser(String)&name=';
+var loginURL=authHost+'/svc/ca.benow.web.security.SecurityWebService?exec=getLogin(String,String)&username=[admin]&password=[pass]';
+var user;
+
+var aE;
+var nE;
+
+var isIE = /MSIE (\d+\.\d+);/.test(navigator.userAgent);
+
+function redirectTo(url) {
+	// for decent browsers, setting document.location.href is sufficient
+	if (!isIE)
+		document.location.href=url;
+	else {
+		// for IE, no referer is sent on setting location.href, so create a link
+		// and click it.  Stupid thing.
+		// @see http://webbugtrack.blogspot.com/2008/11/bug-421-ie-fails-to-pass-http-referer.html
+		var referLink = document.createElement('a');
+		referLink.style.display='none';
+		referLink.href=url;
+//		alert(navigator.userAgent);
+		document.body.appendChild(referLink);
+		referLink.click();
+	}
+}
+
+function detect() {
+	aE=document.getElementById('authenticated');
+	nE=document.getElementById('noauth');
+	var cookie=document.cookie;
+	if (cookie) {
+		var pos=cookie.indexOf('SSOAuth=');
+		if (pos>-1) {
+			var trim=cookie.substring(pos+8);
+			var pos=trim.indexOf(':');
+			if (pos>-1) {
+				user=trim.substring(0,pos);
+				authorized=true;
+			} else
+				alert('Malformed cookie: '+user);
+		}
+	}
+	
+	if (user) {
+		aE.style.display='';
+		nE.style.display='none';
+		onAuth();
+	} else {
+		aE.style.display='none';
+		nE.style.display='';
+	}
+}
+
+function onAuth() {
+		var currUserInfoURL=userInfoURL+user;
+		aE.style.display='';
+		
+		var cookieTrim=document.cookie;
+		var pos=cookieTrim.indexOf('SSOAuth');
+		if (pos>0)
+			cookieTrim=cookieTrim.substring(pos);
+		pos=cookieTrim.indexOf('; ');
+		if (pos>0)
+			cookieTrim=cookieTrim.substring(0,pos);
+		
+		var spans=aE.getElementsByTagName('span');
+		spans[0].innerHTML=user;
+		spans[1].innerHTML=cookieTrim;
+		spans[2].innerHTML=authHost;
+		spans[3].innerHTML='<a target="_blank" href="'+currUserInfoURL+'">'+currUserInfoURL+'</a><br/>';
+		spans[4].innerHTML=loginURL;
+		// get the user information, as provided by javascript service
+		var uE=document.getElementById('user');
+		uE.src=currUserInfoURL;
+		uE.style.display='';
+		var iaE=document.getElementById('isadmin');
+		iaE.style.display=user=='admin'?'':'none';
+		var naE=document.getElementById('notadmin');
+		naE.style.display=user!='admin'?'':'none';
+}
+</script>
+<style>
+span {
+  font-weight: bold;
+}
+</style>
+</head>
+<body style="width: 800px">
+<h1>SSO Cookie Authentication Demo</h1>
+This page demonstrates Single Sign On via cookies using the BeNOW Web Framework.
+<p/>
+<div id="authenticated" style="display: none">
+<h2>Authenticated</h2>
+Authorized as <span>$user</span><br/>
+With cookie: <span>$cookie</span><br/>
+Authentication host: <span>$host</span><br/>
+
+<h2>Logout</h2>
+To logout, redirect to the logout URL
+<div><b><script>document.write(logoutURL)</script></b></div>
+or remove the SSOAuth cookie.
+<p/>
+Hit the button to perform logout:<p/>
+<input type="button" value="Logout!" onclick="redirectTo(logoutURL)"/>
+
+<h2>The Cookie</h2>
+The cookie is named SSOAuth in the format [user]:base64(md5([user]:[ip]:[secret]))<br/>
+Where
+<ul>
+<li>[user]: the name of the authenticated user</li>
+<li>base64(md5([user]:[ip]:[secret])): the md5 processed and base64 encoded value of [user]:[ip]:[secret]
+<br/>Where
+<ul>
+<li>[user]: the user name as given as the first parameter in the clear</li>
+<li>[ip]: the ip address used when the cookie was issued</li>
+<li>[secret]: the secret shared between sites in the same domain</li> 
+</ul>
+</ul>
+To locally verify the cookie, take the given username, combine it with the current ip address
+for the requesting user and the secret. Apply md5 and apply base64 then compare with the given last segment of the cookie.  
+If they match, it's a valid cookie, and it can be assumed that the user has logged in.  
+
+<h2>Fetching User Information</h2>
+To get user information for the user from the remote application, 
+create an administrative request to<br/>
+<span>$url</span><br/>
+This will return an XML result for the given user.  The <i>name</i> parameter is 
+the username determined from the cookie.  In order to run this command, it 
+must be called with the credentials of the <i>admin</i> user or of a user
+with the <code>ca.benow.web.security.SecurityWebService.getUser</code> permission. 
+The response can be parsed to determine if the correct role(s) or group(s) are present.
+<p/>
+<div id="isadmin" style="display: none">
+As the login occurred from your ip address and you are logged in as admin, the 
+command will succeed:
+</div>
+<div id="notadmin" style="display: none">
+As you are not logged in as admin, the command will fail unless you
+are logged in as a user with the <code>ca.benow.web.security.SecurityWebService.getUser</code>
+permission.
+</div> 
+<iframe id="user" style="display: block; width: 800px; height: 400px; margin: 10px; border: 1px solid black">user info</iframe>
+<p/>
+When making the request, the SSOAuth cookie of a privileged user must be given.
+As the SSOAuth cookie validates the IP address, the cookie must be created
+from the server making the request.
+<p/>
+To make this task a bit easier, I've created a Java application to
+fetch the cookie and verify that getUser can be called.  If you have 
+remote access on the web server, login,
+<a href="http://benow.ca/misc/benow-sso-cookie-fetcher.jar">download the jar file</a>
+and run it with:
+<pre>java -jar benow-sso-cookie-fetcher.jar <script>document.write(authHost);</script> [user] [pass]</pre> 
+Where [user] is the name of the privileged user previously described and [pass] is 
+the password.
+<p/>
+Internally, the app does a call to:<br/> 
+<span>$login</span> <br/>
+with the appropriate username and password and retrieves the Set-Cookie response
+header.  The cookie is then used in another request to fetch user information.
+If that request succeeds, the user and cookie are valid and may be used for
+subsequent user information fetches from the same ip.
+</div>
+<div id="noauth">
+<h2>Not Authenticated</h2>
+There is no SSOAuth cookie currently detected:
+<pre>document.cookie: <script>document.write(document.cookie)</script></pre>
+<p/>
+<h2>Login</h2>
+To perform a login, the web application would perform a redirect to 
+<pre><script type="text/javascript">document.write(authURL)</script></pre>
+to perform authentication.
+<p/>
+Hit the button to simulate the redirect:
+<p/>
+<input type="button" value="Authorize!" onclick="redirectTo(authURL)"/>
+</div>
+<script>detect()</script>
+</body>
+</html>
+
+

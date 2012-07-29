@@ -1,0 +1,13 @@
+Forgotten your login?  <a href="/security/reset/">Password reset.</a><p/>
+<div style="color: red; width: 400px">
+<span style="font-weight: bold">July 29, 2012</span>: Efforts are being made to improve the login issues.
+If you are unable to login using your expected password, please
+try a <a href="/security/reset/">password reset</a>.<p/>
+If your email is unknown during a password reset, or if you have <i>any</i>
+problems logging it whatsoever, please 
+<a href="mailto:andy@benow.ca?subject=CJSW Security Help (login.cjsw.com)">contact us</a>.
+Please be sure to include all relevant details (username, browser type, operating 
+system, what you were trying to do, what errors, etc).  Suggestions are also welcome.  
+<p/>
+Thanks for your patience!		
+</div>

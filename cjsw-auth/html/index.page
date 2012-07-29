@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- Sample Page, edit to suit -->
+<xsl:stylesheet exclude-result-prefixes="java" version="1.0"
+  xmlns:java="http://xml.apache.org/xslt/java" 
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  xmlns="http://www.w3.org/1999/xhtml" 
+>
+  <xsl:include href="libutil.xsl"/>
+  <xsl:include href="libcontrol.xsl"/>
+  
+  <xsl:param name="user"/>
+  
+  <xsl:template match="index">
+    <xsl:choose>
+      <!-- only show to administrators -->
+      <xsl:when test="java:getName($user)='anonymous'">
+      	
+				<script>
+				var args='';
+// from disabled, referrer redirect only when directly to login page.				
+//				if (document.referrer)
+//					args='?from='+document.referrer;
+				document.location.href='/security/login/'+args;
+				</script>
+      </xsl:when>
+      <xsl:otherwise>
+    <xsl:call-template name="util.service">
+      <xsl:with-param name="service">ca.benow.web.security.SecurityWebService</xsl:with-param>
+      <xsl:with-param name="method">logout()</xsl:with-param>
+    </xsl:call-template>
+				<h1>Logged In</h1>
+				Currently logged in as <b><xsl:value-of select="java:getName($user)"/></b>.<p/>
+				<input type="button" value="logout" onclick="SecurityWebService.logout()"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  
+</xsl:stylesheet>
