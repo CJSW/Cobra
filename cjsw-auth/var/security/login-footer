@@ -1,6 +1,8 @@
 Forgotten your login?  <a href="/security/reset/">Password reset.</a><p/>
 <div style="color: red; width: 400px">
-<span style="font-weight: bold">July 29, 2012</span>: Efforts are being made to improve the login issues.
+<span style="font-weight: bold">Aug 5, 2012</span>: Thanks to a bug report by Genevieve,
+login should now work with Google Chrome.  The bugs are gradually being squashed.
+<p/>  
 If you are unable to login using your expected password, please
 try a <a href="/security/reset/">password reset</a>.<p/>
 If your email is unknown during a password reset, or if you have <i>any</i>
