@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<config package="org.cjsw">
+<!--BeNOW Config for package: org.cjsw.  http://benow.ca-->
+<!-- Admin Email: Administrator email, where run error mails are sent -->
+<entry name="CJSW.adminEmail">andy@benow.ca</entry>
+</config>

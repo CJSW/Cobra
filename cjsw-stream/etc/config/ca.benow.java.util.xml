@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<config package="ca.benow.java.util">
+<!--BeNOW Config for package: ca.benow.java.util.  http://benow.ca-->
+<!-- Scatter: Value to use to scatter crypts -->
+<entry name="TextUtil.scatter">bqAbxjXT</entry>
+</config>

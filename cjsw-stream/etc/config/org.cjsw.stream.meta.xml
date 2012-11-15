@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<config package="org.cjsw.stream.meta">
+<!--BeNOW Config for package: org.cjsw.stream.meta.  http://benow.ca-->
+<!-- Mounts: All mounts to be updated with blanket update -->
+<entry name="MetadataServiceImpl.mounts">
+<value>/cjsw.ogg</value>
+<value>/cjsw-low.ogg</value>
+<value>/cjsw.mp3</value>
+<value>/cjsw-low.mp3</value>
+</entry>
+<!-- Pass: Pass for metadata update -->
+<entry name="MetadataServiceImpl.pass">str3am</entry>
+<!-- Realm: Http basic auth realm for icecast server -->
+<entry name="MetadataServiceImpl.realm">Icecast2 Server</entry>
+<!-- User: User for metadata update -->
+<entry name="MetadataServiceImpl.user">admin</entry>
+<!-- Host: Host running icecast for metadata update -->
+<entry name="MetadataServiceImpl.host">stream.cjsw.com</entry>
+<!-- Port: Port for update -->
+<entry name="MetadataServiceImpl.port">80</entry>
+</config>

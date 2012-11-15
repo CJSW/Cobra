@@ -1,0 +1,79 @@
+<?xml version="1.0"?> 
+
+<!--
+
+  Hello.xsl
+  
+  Hello World example XSL.  Dumps the message contained in the 
+  OperationPageContent.
+  
+  For a great XSL reference, check out:
+  http://www.zvon.org/xxl/XSLTreference/Output/index.html
+
+-->
+
+<xsl:stylesheet 
+ xmlns="http://www.w3.org/1999/xhtml"  xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+  version="1.0"
+  xmlns:java="http://xml.apache.org/xslt/java"
+  exclude-result-prefixes="java"
+>
+  <xsl:include href="libsite.xsl"/>
+  <xsl:include href="libcjsw.xsl"/>
+
+
+	<xsl:variable name="style">
+		<xsl:if test="not(content/operation/airing)">
+		td {
+			font-family: Arial, Helvetica, sans-serif; 
+			font-size: 10px; 
+		}
+
+		.genreMixed {
+			background: #669966;
+		}
+		
+		.genreJazz {
+		  background: #999999;
+		}
+
+		.genreSpecialty {
+		  background: #0099CC;
+		}
+		
+		.genreNews {
+			background: #FFFF99;
+		}
+
+		.genreMulticultural {
+			background: #996633;
+		}
+		
+	a { color: #000000; text-decoration: none }
+	a:hover { color: #884444; text-decoration: none }
+	a:visited { color: #444444; text-decoration: none }
+	</xsl:if>
+
+	</xsl:variable>
+
+  <xsl:template match="index">
+		<xsl:choose>
+			<xsl:when test="operation/airing">
+				<xsl:for-each select="operation">
+					<xsl:call-template name="dumpDay"/>
+				</xsl:for-each>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:comment>org.cjsw.web.schedule.ScheduleGeneratorPostProcessor</xsl:comment>
+			</xsl:otherwise>
+		</xsl:choose>
+  </xsl:template> 
+
+	<xsl:template name="dumpDay">
+		<font size="+2"><b><xsl:value-of select="airing/@weekday"/></b></font><p/>
+		<xsl:for-each select="airing/show">
+			<xsl:call-template name="cjsw.dumpShowBrief"/>
+		</xsl:for-each>
+	</xsl:template>
+	
+</xsl:stylesheet>

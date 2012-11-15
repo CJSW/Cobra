@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--BeNOW Config for package: org.benow.meta.gis.  http://dev.benow.ca-->
+<config package="ca.benow.meta.gis">
+  <!-- maxmindKey: MaxMind geoip key. -->
+  <entry name="GeoIP.geoIPKey">6zdbwgJ9c7w6</entry>
+</config>

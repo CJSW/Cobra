@@ -1,0 +1,128 @@
+<project name="cjsw-stream" default="compile" basedir="." xmlns:benow="ca.benow">
+
+  <property name="app.name" value="cjsw-stream" />
+  <property name="app.version" value="1.0" />
+
+  <!-- deploy should be the webapps directory for the servlet container -->
+  <property file="/etc/benow/build.properties" />
+  <property file="etc/build.properties" />
+
+
+  <path id="compile.classpath">
+
+    <!-- Include all JAR files that will be included in /WEB-INF/lib -->
+    <!-- *** CUSTOMIZE HERE AS REQUIRED BY YOUR APPLICATION *** -->
+
+    <!-- Include all needed jars -->
+    <fileset dir="${lib.home}">
+      <include name="*.jar" />
+    </fileset>
+    <pathelement path="${java.home}/../lib/tools.jar" />
+    <pathelement path="${build.home}" />
+  </path>
+
+  <taskdef resource="ca/benow/antlib.xml" uri="ca.benow" classpathref="compile.classpath" />
+
+  <target name="all" depends="clean,jar" description="Clean build and dist, then compile" />
+
+  <target name="clean" description="Delete old build directories">
+    <delete dir="${build.home}" quiet="yes" />
+    <delete quiet="yes">
+      <fileset dir="." includes="**/*~" defaultexcludes="no" />
+    </delete>
+
+    <delete dir="${dist.home}" />
+  </target>
+
+  <target name="compile" description="Compile Java sources">
+
+    <mkdir dir="${build.home}" />
+    <!-- Compile Java classes as necessary -->
+    <javac srcdir="src/java" destdir="${build.home}" debug="true" deprecation="${compile.deprecation}" optimize="${compile.optimize}">
+      <classpath refid="compile.classpath" />
+    </javac>
+
+  </target>
+
+  <target name="setup">
+    <exec executable="java">
+      <arg value="-jar" />
+      <arg value="${lib.home}/benow-launch.jar" />
+      <arg value="Launcher" />
+      <arg value="--make-script" />
+    </exec>
+  </target>
+
+
+  <!-- ==================== Dist Target ===================================== -->
+
+
+  <!--
+
+  The "dist" target creates a binary distribution of your application
+  in a directory structure ready to be archived in a tar.gz or zip file.
+  Note that this target depends on two others:
+  * "deploy" so that the entire web application (including external
+    dependencies) will have been assembled
+  * "javadoc" so that the application Javadocs will have been created
+
+-->
+
+
+  <target name="dist" depends="jar" description="Create binary distribution">
+    <delete dir="dist" />
+    <mkdir dir="dist" />
+    <benow:dist name="${app.name}" version="${app.version}">
+      <launcher main="org.cjsw.stream.archive.Archiver" />
+      <launcher main="org.cjsw.stream.transcoder.TranscoderWatcher" />
+      <launcher main="org.cjsw.stream.map.LocationPoller" />
+      <launcher main="org.cjsw.stream.meta.MetadataSetter" />
+      <library includes="${app.name}.jar" />
+      <extract includes="docs/**,etc/config/**" />
+    </benow:dist>
+  </target>
+
+  <target name="jar" depends="compile" description="Create binary distribution">
+
+    <benow:jar jarfile="${app.name}.jar" />
+
+  </target>
+
+  <target name="push">
+    <echo message="Pushing dist/${app.name}-${app.version}.jar to http://admin.cjsw.com/downloads" />
+    <exec executable="scp">
+      <arg value="dist/${app.name}-${app.version}.jar" />
+      <arg value="cjsw.com:/home/httpd/vhosts/admin.cjsw.com/htdocs/downloads/" />
+    </exec>
+  </target>
+
+
+
+  <!-- ==================== Javadoc Target ================================== -->
+
+  <!--
+
+  The "javadoc" target creates Javadoc API documentation for the Java
+  classes included in your application.  Normally, this is only required
+  when preparing a distribution release, but is available as a separate
+  target in case the developer wants to create Javadocs independently.
+
+-->
+
+  <target name="javadoc" depends="compile" description="Create Javadoc API documentation">
+
+    <delete dir="docs/api" />
+    <mkdir dir="docs/api" />
+    <javadoc sourcepath="src" destdir="docs/api" windowtitle="BeNOW Documentation" doctitle="BeNOW Documentation" packagenames="org.benow.*,test.*">
+      <link href="http://benow.ca/docs/jdk1.4/api/" />
+      <link href="http://benow.ca/docs/xalan-j_2_0_D5/" />
+      <link href="http://benow.ca/docs/xerces-1_2_3/" />
+      <link href="http://benow.ca/docs/xerces-1_2_3/" />
+      <link href="http://benow.ca/docs/jsdk2.2b/" />
+      <classpath refid="compile.classpath" />
+    </javadoc>
+
+  </target>
+
+
+</project>

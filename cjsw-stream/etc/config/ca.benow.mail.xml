@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<config package="ca.benow.mail">
+<!--BeNOW Config for package: ca.benow.mail.  http://benow.ca-->
+<!-- Default Sender: default email sender. -->
+<entry name="MailUtil.defaultSender">noreply@cjsw.com</entry>
+<!-- Smtp Host: SMTP host for sending -->
+<entry name="MailUtil.smtpHost">smtp.gmail.com</entry>
+<!-- Smtp Pass: SMTP host for sending -->
+<entry name="MailUtil.smtpPass">9U9258K5</entry>
+<!-- Smtp Port: SMTP port for sending -->
+<entry name="MailUtil.smtpPort">465</entry>
+<!-- Smtp SSL: Use SSL when connecting to smtp server -->
+<entry name="MailUtil.smtpSSL">true</entry>
+<!-- Smtp Start TLS: Use StartTLS when connecting to smtp server (ie smtp.gmail.com) -->
+<entry name="MailUtil.smtpStartTLS">true</entry>
+<!-- Smtp User: SMTP user for sending -->
+<entry name="MailUtil.smtpUser">noreply@cjsw.com</entry>
+</config>

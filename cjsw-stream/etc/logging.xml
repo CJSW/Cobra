@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration>
+
+	<appender name="CONSOLEOUT" class="org.apache.log4j.ConsoleAppender">
+		<param name= "Threshold" value= "debug" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="(%5p:%c{1}:%L - %d{HH:mm:ss,SSS})\n  %m%n"/>
+		</layout>
+	</appender>
+	
+	<appender name= "FILEOUT" class= "org.apache.log4j.RollingFileAppender">
+	<!--
+		<param name= "File" value="c:\\tools\\smartalert\\logs\\smartalert.log"/>
+	-->
+		<param name= "File" value="logs/cjsw.log"/>
+		<param name= "Threshold" value= "info" />
+		<param name= "MaxFileSize" value= "10MB" />
+		<param name= "MaxBackupIndex" value= "3"/>
+		<layout class= "org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="(%5p:%c{1}:%L - %d{HH:mm:ss,SSS})\n  %m%n"/>
+		</layout>
+	</appender>
+	
+	<category name="org.benow.util"><priority value="info"/></category>
+	<category name="org.benow.util.io"><priority value="info"/></category>
+
+	<!-- info: no schedule caching -->
+	<category name="org.cjsw"><priority value="debug"/></category>
+    <category name="org.cjsw.stream"><priority value="info"/></category>
+	<category name="org.cjsw.web.schedule"><priority value="debug"/></category>
+
+
+	<category name="org.firebirdsql"><priority value="info"/></category>
+
+	<category name="org.mortbay"><priority value="info"/></category>
+	
+	<category name="org.benow.web"><priority value="info"/></category>
+	<category name="org.benow.java"><priority value="info"/></category>
+	<category name="org.benow.repository"><priority value="info"/></category>
+
+	<!-- workaround for repeat regen bug -->
+	<category name="org.benow.web.pkg.PagePackageItemImpl"><priority value="error"/></category>
+
+	<root>
+	  <priority value="info"/>
+	  <appender-ref ref="CONSOLEOUT"/>
+	  <appender-ref ref="FILEOUT"/>
+	</root>
+	
+</log4j:configuration>
+
+
