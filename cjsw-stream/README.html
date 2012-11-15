@@ -1,0 +1,60 @@
+<html>
+<head>
+<title>cjsw-stream</title>
+</head>
+<body>
+<h1>CJSW Stream Utilities</h1>
+<a style="display: block; font-size: 10px; position: relative; top: -5px" href="mailto:andy@benow.ca">Andrew Taylor</a>
+
+These are the various custom utilities used for the CJSW stream.  
+
+<ul>
+<li>Archiver: saves audio from one or more streams to a location on the 
+filesystem.</li>
+<li>LocationPoller: polls for listener ip addresses, resolves them to geographical
+coordinates and plots them on a google map, to provide a near real time view of 
+listener locations.</li>
+<li>TranscoderWatcher: ensures the transcoder process is actually working, and restarts
+it if not</li>
+<li>MetadataSetter: updates stream metadata</li>
+</ul>
+
+<h2>Building</h2>
+Install <a href="http://java.sun.com" target="new">java jdk</a> and <a href="http://ant.apache.org">Apache Ant</a>
+and do 
+<pre>
+ ant dist
+</pre>
+Which will build the distribution jar in the <code>dist/</code> directory.
+
+<h2>Installing</h2>
+Copy the distribution jar to the destination machine and double click or do a
+<pre>
+ java -jar cjsw-stream-1.x.jar
+</pre>
+to extract to the <code>cjsw-stream/<code> directory.
+
+<h2>Running</h2>
+The applications are launched from the extracted jar files <code>Archiver.jar</code>, <code>MetadataSetter.jar</code>, etc.
+<p/>
+These utilities can be run in standalone mode, or may be installed as a service.
+<p/>
+To validate the settings, first run in standalone mode:
+<pre>
+  java -jar [utility].jar [--arg1 val1 --arg2]
+</pre>
+run with the <code>--help</code> argument for argument details.
+<p/>
+Once the utility is operating properly, install it as a service with
+<pre>
+  java -jar [utility].jar --install [--arg1 val1 --arg2]
+</pre>
+This will install the service to run with the given arguments.  The service can then be started, stopped and removed via
+<pre>
+  java -jar [utility].jar --start
+  java -jar [utility].jar --stop
+  java -jar [utility].jar --remove 
+</pre>
+
+</body>
+</html>
